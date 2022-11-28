@@ -3,16 +3,15 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { Field } from "../Component/Field";
 import { useForm } from "react-hook-form";
 import { FormInputs } from "./AuthPage";
-import {
-  checkIsAuth,
-  registerUser,
-} from "../redux/slices/authSlice";
+import { checkIsAuth, registerUser } from "../redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "../hook";
 import { useNavigate } from "react-router-dom";
 import { ISendData } from "../types";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function RegistrationPage() {
   const isAuth = useAppSelector(checkIsAuth);
+  const { status } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
@@ -128,15 +127,18 @@ export default function RegistrationPage() {
             error={!!errors?.password}
             helperText={errors?.password && errors.password.message}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={!isValid}
-          >
-            Registration
-          </Button>
+          {status !== "loading" && (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={!isValid}
+            >
+              Registration
+            </Button>
+          )}
+          {status === "loading" && <CircularProgress />}
         </Box>
       </Paper>
     </Grid>
